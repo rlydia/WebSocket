@@ -14,9 +14,13 @@ app.listen(PORT)
 var bindListener = function(socket, event) {
   socket.on(event, function(data) {
     if (socket.clientNum % 2 == 0) {
-      socketMap[socket.clientNum - 1].emit(event, data);
+      if (socketMap[socket.clientNum - 1]) {
+        socketMap[socket.clientNum - 1].emit(event, data);
+      }
     } else {
-      socketMap[socket.clientNum + 1].emit(event, data);
+      if (socketMap[socket.clientNum + 1]) {
+        socketMap[socket.clientNum + 1].emit(event, data);
+      }
     }
   });
 }
@@ -31,8 +35,12 @@ io.on('connection', function(socket) {
   if (clientCount % 2 == 1) {
     socket.emit('waiting', 'waiting for another person');
   } else {  
-    socket.emit('start');
-    socketMap[(clientCount - 1)].emit('start');  // 给配对的socket一个发送一个start消息；
+    if (socketMap[(clientCount - 1)]) {
+      socket.emit('start');
+      socketMap[(clientCount - 1)].emit('start');  // 给配对的socket发送一个start消息；
+    } else {
+      socket.emit('leave')
+    }
   }
 
   bindListener(socket, 'init');
@@ -45,6 +53,8 @@ io.on('connection', function(socket) {
   bindListener(socket, 'line');
   bindListener(socket, 'time');   // 在server端进行转发
   bindListener(socket, 'lose');
+  bindListener(socket, 'bottomLines');  // 转发
+  bindListener(socket, 'addTailLines');
 
 
   // 服务器收到init消息后，转发给另一个socket客户端；
@@ -65,7 +75,17 @@ io.on('connection', function(socket) {
   // });
 
   socket.on('disconnect', function() {
-    
+    if (socket.clientNum % 2 == 0) {
+      if (socketMap[socket.clientNum - 1]) {
+        // 若socketMap[socket.clientNum - 1]这个值 不是undefined，我们才去emit;
+        socketMap[socket.clientNum - 1].emit('leave');
+      }
+    } else {
+      if (socketMap[socket.clientNum + 1]) {
+        socketMap[socket.clientNum + 1].emit('leave');
+      }
+    }
+    delete(socketMap[socket.clientNum])
   });
 });
 

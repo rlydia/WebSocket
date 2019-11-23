@@ -258,12 +258,12 @@ var addScore = function(line){
 }
 
 // 游戏结束
-var gameOver = function(win){
-      if(win){
-          resultDiv.innerHTML = "你赢了";
-      } else{
-          resultDiv.innerHTML = "你输了";
-      }
+var gameover = function(win){
+  if(win){
+    resultDiv.innerHTML = "你赢了";
+  } else{
+    resultDiv.innerHTML = "你输了";
+  }
 }
 
 // 底部增加行
@@ -309,6 +309,6 @@ this.checkClear = checkClear;
 this.checkGameOver = checkGameOver;
 this.setTime = setTime;
 this.addScore = addScore;
-this.gameOver = gameOver;
+this.gameover = gameover;
 this.addTailLines = addTailLines;
 }

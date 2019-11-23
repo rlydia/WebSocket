@@ -10,7 +10,7 @@ var Remote = function(socket){
 
     socket.on('next', function(data) {
       // 驱动对方游戏区域也调用performNext()
-       game.performNext(data.type, data.dir)
+      game.performNext(data.type, data.dir)
     });
 
     socket.on('rotate', function(data) {
@@ -47,6 +47,10 @@ var Remote = function(socket){
     socket.on('lose', function(data) {
       game.gameover(false);
     });
+
+    socket.on('addTailLines', function(data) {
+      game.addTailLines(data);
+    });
   }
   // 开始
   var start = function(type,dir){
@@ -55,7 +59,7 @@ var Remote = function(socket){
           nextDiv : document.getElementById("remote_next"),
           timeDiv : document.getElementById("remote_time"),
           scoreDiv : document.getElementById("remote_score"),
-          resultDiv : document.getElementById("remote_gameOver")
+          resultDiv : document.getElementById("remote_gameover")
       }
       game = new Game();
       game.init(doms,type,dir);

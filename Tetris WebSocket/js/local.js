@@ -2,7 +2,7 @@ var Local = function(socket){
   // 游戏对象
   var game;
   // 时间间隔
-  var INTERVAL = 200;
+  var INTERVAL = 2000;  // 2秒
   // 定时器
   var timer = null;
   // 时间计数器
@@ -41,11 +41,16 @@ var Local = function(socket){
       if(line){
         game.addScore(line);
         socket.emit('line', line)  // 将消完的消息传递
+        // 若一次消行大于等于 两行 ---给对方增加底部干扰；
+        if (line > 1) {
+          var bottomLines = generateBottomLine(line);
+          socket.emit('bottomLines', bottomLines)
+        }
       }
-      var gameOver = game.checkGameOver();
+      var gameOver = game.checkGameOver();  
       if(gameOver){
         game.gameover(false);
-        document.getElementById('remote_gameover').imnerHTML = '你赢了';
+        document.getElementById('remote_gameover').innerHTML = '你赢了';
         // 处理有两方对战时的输赢问题；
         socket.emit('lose');
         stop();
@@ -107,10 +112,10 @@ var Local = function(socket){
           nextDiv : document.getElementById("local_next"),
           timeDiv : document.getElementById("local_time"),
           scoreDiv : document.getElementById("local_score"),
-          resultDiv : document.getElementById("local_gameOver")
+          resultDiv : document.getElementById("local_gameover")
       }
       game = new Game();
-      // generateType(),generateDir() 随机生成的方块种类，与随机生成的方块方向；
+      // generateType(),generateDir() 随机生成的方块种类，与随机生成的方块方向；这两个参数需通过websocket传送给另外的客户端；
       var type = generateType()
       var dir = generateDir()
       // 在start方法中调用 game.init方法；
@@ -150,4 +155,16 @@ var Local = function(socket){
     game.gameover(true);
     stop();
   });
+
+  // leave消息一定是对方发过来的 -- 掉线的逻辑；
+  socket.on('leave', function() {
+    document.getElementById('local_gameover').innerHTML = "对方掉线";
+    document.getElementById('remote_gameover').innerHTML = "已掉线";
+    stop();
+  })
+
+  socket.on('bottomLines', function(data) {
+    game.addTailLines(data);
+    socket.emit('addTailLines', data)
+  })
 }
