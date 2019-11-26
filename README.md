@@ -76,7 +76,7 @@ socket.io带来的优势：
 
 俄罗斯方块实现原理：  (对应的是二维数组)
 
-![image-20191120144215633](D:\Lydia\github\WebSocket\mdImage\image-20191120144215633.png)
+![image-20191120144215633](\mdImage\image-20191120144215633.png)
 
 ```
 视图view     二维数组-模型model    控制器control
@@ -93,7 +93,7 @@ single文件夹：
 
 俄罗斯方块结构图:
 
-![image-20191120154532451](D:\Lydia\github\WebSocket\mdImage\image-20191120154532451.png)
+![image-20191120154532451](\mdImage\image-20191120154532451.png)
 
 模块化--面向对象；squareFactory.js (工厂类--用来生成方块)
 

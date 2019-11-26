@@ -34,7 +34,7 @@ var Local = function() {
     // 若不能下降了 才去调用game.fixed();
     if (!game.down()) {
       game.fixed();
-      var line = game.checkClear();
+      var line = game.checkClear(); // 消行的逻辑 应在game.fixed()之后；
       if(line) {  // 若line不为0 --- 表消了一行后 有了得分；
         game.addScore(line);
       }
@@ -50,7 +50,7 @@ var Local = function() {
     }
   }
 
-  // 随机生成干扰行
+  // 随机生成干扰行 （消了多少行 就随机生成多少干扰行）
   var generataBottomLine = function(lineNum) {
     var lines = []
     for(var i = 0; i < lineNum; i++) {
@@ -79,12 +79,12 @@ var Local = function() {
   
   // 随机生成一个方块的种类
   var generateType = function() {
-    return Math.ceil(Math.random() * 7) - 1;
+    return Math.ceil(Math.random() * 7) - 1;  // 随机生成0-6的整数；
   }
 
   // 随机生成一个旋转次数
   var generateDir = function() {
-    return Math.ceil(Math.random() * 4) - 1;
+    return Math.ceil(Math.random() * 4) - 1;  // 随机生成 0 -3 的整数
   }
 
   // 开始
